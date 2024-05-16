@@ -18,7 +18,7 @@ async def get_daily_open(stock):
     try:
         today = pd.Timestamp('today').strftime('%Y-%m-%d')
         data = yf.download(stock, period='1d')
-        return data['Open'][today]
+        return round(data['Open'][today],2)
     except Exception as e:
         print("Error fetching daily open price for", stock, ":", e)
         return None
@@ -26,7 +26,7 @@ async def get_daily_open(stock):
 async def get_current_price(stock):
     try:
         data = yf.download(stock, period='1d')
-        return data['Close'].iloc[-1]  # Get the latest close price
+        return round(data['Close'].iloc[-1],2)  # Get the latest close price
     except Exception as e:
         print("Error fetching current price for", stock, ":", e)
         return None

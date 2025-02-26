@@ -8,9 +8,9 @@ intents.messages = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-channel_id = 1197258358508494850
+channel_id = 1339315526295359518
 
-stocks = ["UAA", "META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", "NKE", "SBUX"]
+stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", "NKE", "SBUX","DAL","HD","AFRM","RBLX","VLO","CVX","CRWD","COST","TSLA"]
 
 opening_prices = {}  # store the daily open
 

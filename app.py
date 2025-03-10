@@ -13,7 +13,7 @@ channel_id = 1339315526295359518
 stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", "NKE", "SBUX","DAL","HD","AFRM","RBLX","VLO","CVX","CRWD","COST","TSLA"]
 
 opening_prices = {}  # store the daily open
-#current version as of 3/5/25
+#current version as of 3/10/25
 async def get_daily_open(stock):
     try:
         data = yf.download(stock, period='1d',auto_adjust=False)

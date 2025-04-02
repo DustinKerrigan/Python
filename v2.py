@@ -3,10 +3,12 @@ import discord
 from discord.ext import tasks, commands
 import yfinance as yf
 from datetime import datetime
+import os
 
 intents = discord.Intents.default()
 intents.messages = True
 
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 bot = commands.Bot(command_prefix='!', intents=intents)
 channel_id = 1339315526295359518  # Replace with your actual channel ID
 
@@ -65,7 +67,7 @@ async def start_bot():
     if not running:
         print("🚀 Starting bot...")
         running = True
-        await bot.start("MTE5NjYwODkwNjQzNzM0OTQ5Nw.G__5WS.VGGMFzYRFToEny04InLybSh43rXZZwnirPmPRo")  # Replace with your actual bot token
+        await bot.start(TOKEN)  # Replace with your actual bot token
 
 async def stop_bot():
     global running
@@ -102,4 +104,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())  # ✅ FIX: Use asyncio.run() instead of get_event_loop()
     except KeyboardInterrupt:
-        print("🛑 Bot stopped manually.")
+

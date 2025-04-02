@@ -1,23 +1,20 @@
-import schedule
-import time
 import asyncio
 import discord
 from discord.ext import tasks, commands
-import pandas as pd
 import yfinance as yf
-import threading
 from datetime import datetime
 
 intents = discord.Intents.default()
 intents.messages = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-channel_id = 1339315526295359518
+channel_id = 1339315526295359518  # Replace with your actual channel ID
 
-stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", "NKE", "SBUX", "DAL", "HD", "AFRM", "RBLX", "VLO", "CVX", "CRWD", "COST", "TSLA"]
+stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", 
+          "NKE", "SBUX", "DAL", "HD", "AFRM", "RBLX", "VLO", "CVX", "CRWD", "COST", "TSLA"]
 
-opening_prices = {}  
-running = False  #state flag
+opening_prices = {}
+running = False  # State flag
 
 async def get_daily_open(stock):
     try:
@@ -50,54 +47,59 @@ async def check_stock_prices():
 async def send_stock_alert(stock, price):
     try:
         channel = bot.get_channel(channel_id)
-        message = f"Price Alert: {stock} has reached its DAILY OPENING price of {price}."
-        await channel.send(message)
+        if channel:
+            message = f"📢 Price Alert: {stock} has reached its DAILY OPENING price of {price}."
+            await channel.send(message)
+        else:
+            print("⚠️ Channel not found.")
     except Exception as e:
-        print(f"Error sending message: {e}")
+        print(f"⚠️ Error sending message: {e}")
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name}')
+    print(f'✅ Logged in as {bot.user.name}')
     check_stock_prices.start()
 
 async def start_bot():
     global running
     if not running:
-        print("Starting bot...")
+        print("🚀 Starting bot...")
         running = True
-        await bot.start("MTE5NjYwODkwNjQzNzM0OTQ5Nw.G__5WS.VGGMFzYRFToEny04InLybSh43rXZZwnirPmPRo")
+        await bot.start("MTE5NjYwODkwNjQzNzM0OTQ5Nw.G__5WS.VGGMFzYRFToEny04InLybSh43rXZZwnirPmPRo")  # Replace with your actual bot token
 
 async def stop_bot():
     global running
     if running:
-        print("Stopping bot...")
+        print("🛑 Stopping bot...")
         running = False
-        check_stock_prices.cancel() 
-        await bot.close()
+        check_stock_prices.cancel()
+        await bot.close()  # Proper shutdown of the bot
 
-def run_scheduler():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    #bot start at 9:45 AM and stop at 4:00 PM
-    for day in ["monday", "tuesday", "wednesday", "thursday", "friday"]:
-        getattr(schedule.every(), day).at("09:45").do(lambda: loop.create_task(start_bot()))
-        getattr(schedule.every(), day).at("16:00").do(lambda: loop.create_task(stop_bot()))
-
-    print("Scheduler running... Waiting for 9:45 AM.")
-
+async def bot_scheduler():
+    """Scheduler that runs in the bot's event loop, ensuring it doesn't shut down immediately."""
     while True:
-        schedule.run_pending()
-        time.sleep(30)  
+        now = datetime.now().time()
+        market_open = datetime.strptime("09:45", "%H:%M").time()
+        market_close = datetime.strptime("16:00", "%H:%M").time()
 
-#scheduler in a separate thread
-scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
-scheduler_thread.start()
+        if market_open <= now <= market_close:
+            if not running:
+                print("⏳ Market open - Starting bot from scheduler...")
+                await start_bot()
+        else:
+            if running:
+                print("⏳ Market closed - Stopping bot from scheduler...")
+                await stop_bot()
 
-#if we need to start the bot immediately (if it's within market hours)
-now = datetime.now().time()
-market_open = datetime.strptime("09:45", "%H:%M").time()
-market_close = datetime.strptime("16:00", "%H:%M").time()
+        await asyncio.sleep(60)  # Check every minute
 
-if market_open <= now <= market_close:
-    asyncio.run(start_bot())  #start the bot immediately if it's within trading hours
+async def main():
+    """Runs the bot and scheduler together using asyncio.run()."""
+    asyncio.create_task(bot_scheduler())  # Run scheduler in the background
+    await start_bot()  # Start bot in main event loop
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())  # ✅ FIX: Use asyncio.run() instead of get_event_loop()
+    except KeyboardInterrupt:
+        print("🛑 Bot stopped manually.")

@@ -4,12 +4,14 @@ import pandas as pd
 import yfinance as yf
 import datetime
 import pytz
+import os
 
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.default()
 intents.messages = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 channel_id = 1339315526295359518
-stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "PARA", "NKE", "SBUX","DAL","HD","AFRM","RBLX","VLO","CVX","CRWD","COST","TSLA"]
+stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA", "NKE", "SBUX","DAL","HD","AFRM","RBLX","VLO","CVX","CRWD","COST","TSLA"]
 opening_prices = {} 
 MARKET_OPEN_TIME = datetime.time(9, 45, 0)  # 9:45 AM ET
 MARKET_CLOSE_TIME = datetime.time(16, 0, 0)  # 4:00 PM ET
@@ -77,4 +79,4 @@ async def on_ready():
     check_stock_prices.start()
     print("Bot is running. It will automatically monitor stocks during market hours.")
 
-bot.run("MTE5NjYwODkwNjQzNzM0OTQ5Nw.GqDA7E.uyuNlzZDzunZxZzBTxnFH0DHVZshNYjKVgPMUw")
+bot.run(TOKEN)

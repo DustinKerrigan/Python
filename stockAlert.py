@@ -10,7 +10,7 @@ TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 intents = discord.Intents.default()
 intents.messages = True
 bot = commands.Bot(command_prefix='!', intents=intents)
-channel_id = 1339315526295359518
+channel_id = 1560706710602252389
 stocks = ["META", "NVDA", "GS", "WFC", "ENPH", "CAT", "NCLH", "MGM", "CMCSA"
 , "NKE", "SBUX","DAL","HD","AFRM","RBLX","VLO","CVX","CRWD","COST","TSLA", "AAPL", "SPY", "QQQ", "BAC", "MSFT", "DKNG"]
 opening_prices = {} 
